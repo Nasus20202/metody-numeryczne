@@ -1,5 +1,5 @@
 Simulation with USD/PLN (1000 days), false signals offset: 2 days
         Initial balance: 1000.00
-        Final balance: 1128.31
-        Profit: 128.31 (12.83%)
+        Final balance: 1133.71
+        Profit: 133.71 (13.37%)
         

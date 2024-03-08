@@ -1,5 +1,5 @@
 Simulation with KRW/USD (1000 days), false signals offset: 4 days
         Initial balance: 1000.00
-        Final balance: 1003.70
-        Profit: 3.70 (0.37%)
+        Final balance: 931.77
+        Profit: -68.23 (-6.82%)
         

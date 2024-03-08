@@ -45,8 +45,8 @@ for file_counter, file_id in enumerate(file_ids):
         currency_name = data_files[file_id][1]
         filename_prefix = currency_name.replace('/', '_').lower()
 
-        data = pd.read_csv(file_name)[['Data', 'Otwarcie']]
-        data = data.rename(columns={'Data': 'Date', 'Otwarcie': 'Value'})
+        data = pd.read_csv(file_name)[['Data', 'Zamkniecie']]
+        data = data.rename(columns={'Data': 'Date', 'Zamkniecie': 'Value'})
         data['Date'] = pd.to_datetime(data['Date'])
         data
 
@@ -123,11 +123,11 @@ for file_counter, file_id in enumerate(file_ids):
             elif prev_macd > prev_signal and macd < signal:
                 sell = True
 
-            for i in range(index-false_signals_offset, index):
+            for i in range(index-false_signals_offset, index+1):
                 if (data.at[i, 'MACD'] > data.at[i, 'SIGNAL']):
-                    buy = False
-                elif (data.at[i, 'MACD'] < data.at[i, 'SIGNAL']):
                     sell = False
+                if (data.at[i, 'MACD'] < data.at[i, 'SIGNAL']):
+                    buy = False
             
             if buy and not sell:
                 data.at[index, 'Action'] = 'BUY'
@@ -162,7 +162,7 @@ for file_counter, file_id in enumerate(file_ids):
         last_date = tailed_data['Date'][len(tailed_data)-1]
         date_format = '%Y-%m-%d'
         plot_title = f'MACD and SIGNAL for {currency_name}     \
-            ({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(tailed_data)} days)'
+({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(tailed_data)} days)'
         if false_signals_offset == false_signal_offset_for_plot:
             plot_MACD_and_SIGNAL(tailed_data, title=plot_title, filename=f'plots/{filename_prefix}_macd_signal.png')
 
@@ -197,8 +197,8 @@ for file_counter, file_id in enumerate(file_ids):
         plot_data = data.tail(plot_days_count).reset_index()
         first_date = plot_data['Date'][0]
         last_date = plot_data['Date'][len(plot_data)-1]
-        plot_title = f'{currency_name} with BUY/SELL points with     \
-            ({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(plot_data)} days)'
+        plot_title = f'{currency_name} with BUY/SELL points     \
+({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(plot_data)} days)'
         if false_signals_offset == false_signal_offset_for_plot:
             plot_exchange_rate_with_buy_sell_points(plot_data, title=plot_title, filename=f'plots/{filename_prefix}_value_buy_sell.png')
 
@@ -262,6 +262,7 @@ output += '\n'
 for file_counter, file_id in enumerate(file_ids):
     for false_signals_offset in false_signals_offset_range:
         output += f'Currency: {data_files[file_id][1]}, offset: {false_signals_offset} days, profit: {results[file_counter][false_signals_offset]:.2f}%\n'
+    output += '\n'
 
 print(output)
 with open('results/profit_summary.txt', 'w') as file:
