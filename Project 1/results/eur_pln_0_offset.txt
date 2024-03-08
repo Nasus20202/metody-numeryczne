@@ -1,0 +1,5 @@
+Simulation with EUR/PLN (1000 days), false signals offset: 0 days
+        Initial balance: 1000.00
+        Final balance: 1130.18
+        Profit: 130.18 (13.02%)
+        

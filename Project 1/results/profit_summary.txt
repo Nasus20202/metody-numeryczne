@@ -1,0 +1,43 @@
+Offset: 0 days, average profit: 11.96%
+Offset: 1 days, average profit: 7.33%
+Offset: 2 days, average profit: 6.19%
+Offset: 3 days, average profit: 8.15%
+Offset: 4 days, average profit: 8.21%
+Offset: 5 days, average profit: 8.53%
+
+Currency: KRW/USD, average profit: 0.77%
+Currency: KRW/PLN, average profit: 17.98%
+Currency: USD/PLN, average profit: 14.48%
+Currency: EUR/PLN, average profit: 8.41%
+Currency: EUR/USD, average profit: 0.33%
+
+Currency: KRW/USD, offset: 0 days, profit: 4.82%
+Currency: KRW/USD, offset: 1 days, profit: -0.19%
+Currency: KRW/USD, offset: 2 days, profit: 0.56%
+Currency: KRW/USD, offset: 3 days, profit: -0.46%
+Currency: KRW/USD, offset: 4 days, profit: 0.37%
+Currency: KRW/USD, offset: 5 days, profit: -0.47%
+Currency: KRW/PLN, offset: 0 days, profit: 27.01%
+Currency: KRW/PLN, offset: 1 days, profit: 17.29%
+Currency: KRW/PLN, offset: 2 days, profit: 10.71%
+Currency: KRW/PLN, offset: 3 days, profit: 18.36%
+Currency: KRW/PLN, offset: 4 days, profit: 16.75%
+Currency: KRW/PLN, offset: 5 days, profit: 17.73%
+Currency: USD/PLN, offset: 0 days, profit: 11.24%
+Currency: USD/PLN, offset: 1 days, profit: 8.71%
+Currency: USD/PLN, offset: 2 days, profit: 12.83%
+Currency: USD/PLN, offset: 3 days, profit: 17.28%
+Currency: USD/PLN, offset: 4 days, profit: 21.28%
+Currency: USD/PLN, offset: 5 days, profit: 15.55%
+Currency: EUR/PLN, offset: 0 days, profit: 13.02%
+Currency: EUR/PLN, offset: 1 days, profit: 9.29%
+Currency: EUR/PLN, offset: 2 days, profit: 6.76%
+Currency: EUR/PLN, offset: 3 days, profit: 6.76%
+Currency: EUR/PLN, offset: 4 days, profit: 5.93%
+Currency: EUR/PLN, offset: 5 days, profit: 8.72%
+Currency: EUR/USD, offset: 0 days, profit: 3.70%
+Currency: EUR/USD, offset: 1 days, profit: 1.58%
+Currency: EUR/USD, offset: 2 days, profit: 0.06%
+Currency: EUR/USD, offset: 3 days, profit: -1.22%
+Currency: EUR/USD, offset: 4 days, profit: -3.26%
+Currency: EUR/USD, offset: 5 days, profit: 1.13%

@@ -1,0 +1,5 @@
+Simulation with EUR/USD (1000 days), false signals offset: 5 days
+        Initial balance: 1000.00
+        Final balance: 1011.27
+        Profit: 11.27 (1.13%)
+        

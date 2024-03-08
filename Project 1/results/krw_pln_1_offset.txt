@@ -1,0 +1,5 @@
+Simulation with KRW/PLN (1000 days), false signals offset: 1 days
+        Initial balance: 1000.00
+        Final balance: 1172.87
+        Profit: 172.87 (17.29%)
+        
