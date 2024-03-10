@@ -3,7 +3,7 @@
 \documentclass[12pt, a4paper]{article}
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
-\usepackage[margin=0.5in,footskip=0.125in]{geometry}
+\usepackage[margin=0.5in,footskip=0.25in]{geometry}
 \usepackage[polish]{babel}
 \usepackage{hyperref}
 \usepackage{amsmath}
@@ -26,7 +26,7 @@
 
 \section{Wstęp}
 
-\subsection{MACD}
+\subsection{Wskaźnik giełdowy MACD}
 Celem projektu jest zaimplementowanie wskaźnika giełdowego MACD (ang. Moving Average Convergence Divergence)
 oraz przeprowadzenie analizy jego skuteczności. Celem wskaźnika MACD jest wykrywanie oraz rozpoznawanie
 zmian trendów na rynku finansowym. MACD składa się z 2 szeregów czasowych: linii MACD oraz linii sygnałowej.
@@ -45,7 +45,7 @@ były w trendzie przez minimalną ilość dni, zanim zostanie wygenerowany sygna
 
 \subsection{Implementacja}
 Do Implementacji wskaźnika MACD wykorzystano język \textit{Python} oraz narzędzie
-\textit{Jupyter Notebook}, wraz z bibliotekami \textit{pandas}, \textit{numpy} oraz \textit{matplotlib}.
+\textit{Jupyter Notebook}, wraz z bibliotekami \textit{pandas} oraz \textit{matplotlib}.
 Dane do analizy pochodzą z serwisu \href{https://stooq.pl/}{stooq.pl}.
 W projekcie wykorzystano dane dotyczące 5 kursów walutowych:
 \small
@@ -96,6 +96,8 @@ Dane wejściowe zawierają informacje o kursach od 01.01.2019 do 31.12.2023.
     \label{fig:other_currencies}
 \end{figure}
 
+Pełne wykresy kursów walutowych znajdują się w dodatku do sprawozdania (sekcja \ref{sec:Wykresy}).
+
 \section{Obliczenie wskaźnika MACD dla kursu EUR/USD}
 
 Do obliczenia wskaźnika MACD wykorzystano wzory:
@@ -127,26 +129,16 @@ przedstawiono na poniższym wykresie:
 Wykres niebieski przedstawia wartość wskaźnika MACD, a pomarańczowy - wartość wskaźnika SIGNAL.
 Na wykresie zaznaczono również punkty, w których wartości wskaźników przecinają się oraz
 oznaczono je jako punkty kupna (BUY) oraz sprzedaży (SELL).
+Można zauważyć, że sygnały sprzedaży generowane są zazwyczaj w momencie, gdy wartość wskaźnika MACD
+jest w szczycie, a sygnały kupna w momencie, gdy wartość wskaźnika MACD jest w dołku.
+
+Pozostałe wykresy wskaźników MACD oraz SIGNAL znajdują się w dodatku do sprawozdania (sekcja \ref{sec:Wykresy}).
 
 
 \section{Analiza skuteczności wskaźnika MACD}
 
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1.0\textwidth]{eur_usd_value_buy_sell.png}
-    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego EUR/USD.}
-    \label{fig:eur_usd_value_buy_sell}
-\end{figure}
-
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=1.0\textwidth]{usd_pln_value_buy_sell.png}
-    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego USD/PLN.}
-    \label{fig:usd_pln_value_buy_sell}
-\end{figure}
-
 Z natury wskaźnika MACD wynika, że sygnały kupna oraz sprzedaży są generowane z opóźnieniem.
-Nadają się one do wykrywania trendów, ale nie są odpowiednie do wykrywania szczytów oraz dołków.
+Nadają się one do wykrywania trendów, ale nie są odpowiednie do wykrywania szczytów oraz dołków w czasie rzeczywistym.
 W związku z tym wskaźnik MACD nie jest optymalny do handlu na krótkich interwałach czasowych.
 Jak można zauważyć na wykresach powyżej, niejednokrotnie sygnały kupna oraz sprzedaży
 są generowane z opóźnieniem względem szczytów oraz dołków kursu walutowego. W skrajnych przypadkach
@@ -155,11 +147,43 @@ sygnały kupna oraz sprzedaży są generowane w momencie, gdy trend już się od
 Wskaźnik MACD jest także podatny na generowanie fałszywych sygnałów. Aby ograniczyć
 ich liczbę, można zastosować dodatkowe filtry.
 
+\subsection{EUR/USD}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{eur_usd_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego EUR/USD.}
+    \label{fig:eur_usd_value_buy_sell}
+\end{figure}
+
+Wykres przedstawia sygnały kupna oraz sprzedaży dla kursu walutowego EUR/USD 
+nałożone na wykres kursu walutowego. Można zauważyć, że punkty przecięcia linii MACD oraz sygnałowej
+zazwyczaj nie pokrywają się z szczytami oraz dołkami kursu walutowego. Zazwyczaj są one generowane
+z kilkudniowym opóźnieniem. 
+
+Wykres przedstawia również histogram wartości wskaźnika MACD. Przedstawia on różnicę
+pomiędzy wartościami wskaźnika MACD oraz SIGNAL. Wykres ten potwierdza obserwacje z poprzedniego
+wykresu. Jeśli pojawia się trend wzrostowy, to wartość histogramu staje się dodatnia dopiero 
+po kilku dniach. Analogiczna sytuacja występuje w przypadku trendu spadkowego.
 
 
 
+\subsection{USD/PLN}
 
-\pagebreak
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{usd_pln_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego USD/PLN.}
+    \label{fig:usd_pln_value_buy_sell}
+\end{figure}
+
+Powyższy wykres jest analogiczny do poprzedniego. Można zauważyć, że sygnały, jak i histogram
+wskaźnika MACD, są generowane z opóźnieniem względem zmian kursu walutowego. W efekcie, większość 
+transakcji  kupna oraz sprzedaży przynosi małe zyski lub straty.
+
+Wykresy dla pozostałych walut znajdują się w dodatku do sprawozdania (sekcja \ref{sec:Wykresy}).
+
+
 \section{Symulacja handlu na podstawie wskaźnika MACD}
 
 Do przeprowadzenia symulacji handlu na podstawie wskaźnika MACD, zaimplementowano
@@ -184,6 +208,14 @@ Następnie symulację powtórzono dla różnych wartości parametru filtra.
 W przypadku kursu EUR/USD, najlepsze wyniki uzyskano dla 2 dniowego filtra.
 Wykorzystanie tego filtra pozwoliło na uzyskanie kapitału równego 1047.16 EUR,
 co daje zysk w wysokości 4.72\%.
+
+\pagebreak
+
+
+
+
+
+
 
 Poniżej przedstawiono wyniki symulacji handlu dla 5 walut oraz różnych wartości parametru filtru:
 
@@ -216,28 +248,21 @@ Poniżej przedstawiono wyniki symulacji handlu dla 5 walut oraz różnych warto�
     \end{table}
 \end{center}
 
-Warto zuaważyć, że optymalna wartość parametru filtra zależy od waluty.
+Warto zauważyć, że optymalna wartość parametru filtra zależy od waluty.
 Zmiana wyników symulacji w zależności od wartości parametru filtra
 różni się w zależności od waluty. W średnim przypadku, najlepsze wyniki uzyskano dla 1 dniowego filtra.
 Zastosowanie filtrów dłuższych niż 2 dniowe nie przyniosło pozytywnych rezultatów.
 
-\pagebreak
-
-
-
-
-
-
 \section{Wnioski}
-Dla kursu walutowego EUR/USD, wskaźnik MACD okazał się cześciowo skuteczny.
+Dla kursu walutowego EUR/USD, wskaźnik MACD okazał się częściowo skuteczny.
 Wyniki symulacji handlu na podstawie wskaźnika MACD były pozytywne, ale niezbyt znaczące.
 Dla kursu EUR/USD, najlepsze wyniki uzyskano dla 2 dniowego filtra,
 co pozwoliło na uzyskanie zysku w wysokości 4.72\%. Należy jednak pamiętać, że wyniki symulacji
 nie uwzględniają różnicy kursu kupna oraz sprzedaży. Koszty transakcji mogą znacząco obniżyć zysk.
 
-Z wykresu \ref{fig:eur_usd_value_buy_sell} wynika, że punkty przecięcia linii MACD oraz sygnałowej
+Z wykresu \ref{fig:eur_usd_value_buy_sell} (EUR/USD) wynika, że punkty przecięcia linii MACD oraz sygnałowej
 nie zawsze pokrywają się z szczytami oraz dołkami kursu walutowego. Wynika to z natury wskaźnika MACD,
-który jest opóźniony względem kursu walutowego. W efekcie więkoszość transkacji kupna oraz sprzedaży
+który jest opóźniony względem kursu walutowego. W efekcie większość transakcji kupna oraz sprzedaży
 przyniosła małe zyski lub straty.
 
 Bardzo dobry przykład takiej sytuacji widać na tym wykresie w okolicach 2023-07. Kurs
@@ -273,5 +298,152 @@ Z drugiej strony, wskaźnik MACD sprawdza się bardzo dobrze jako analityczne na
 do oceny trendów na rynku. Dla długoterminowych danych pozwala na skuteczne
 wykrywanie trendów wzrostowych oraz spadkowych. W połączeniu z innymi wskaźnikami
 może być użyteczny do analizy rynku.
+
+
+\pagebreak
+
+
+
+
+
+
+\section{Wykresy}
+\label{sec:Wykresy}
+
+\subsection{EUR/USD}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_usd_value.png}
+    \caption{Wykres kursu walutowego EUR/USD od 01.01.2019 do 31.12.2023.}
+    \label{fig:all:eur_usd_value}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_usd_macd_signal.png}
+    \caption{Wykres wskaźnika MACD oraz SIGNAL dla kursu walutowego EUR/USD.}
+    \label{fig:all:eur_usd_macd_signal}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_usd_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego EUR/USD.}
+    \label{fig:all:eur_usd_value_buy_sell}
+\end{figure}
+
+\pagebreak
+
+
+
+
+
+
+
+\subsection{EUR/PLN}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_pln_value.png}
+    \caption{Wykres kursu walutowego EUR/PLN od 01.01.2019 do 31.12.2023.}
+    \label{fig:all:eur_pln_value}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_pln_macd_signal.png}
+    \caption{Wykres wskaźnika MACD oraz SIGNAL dla kursu walutowego EUR/PLN.}
+    \label{fig:all:eur_pln_macd_signal}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{eur_pln_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego EUR/PLN.}
+    \label{fig:all:eur_pln_value_buy_sell}
+\end{figure}
+
+\pagebreak
+
+
+
+
+
+
+\subsection{KRW/PLN}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_pln_value.png}
+    \caption{Wykres kursu walutowego KRW/PLN od 01.01.2019 do 31.12.2023.}
+    \label{fig:all:krw_pln_value}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_pln_macd_signal.png}
+    \caption{Wykres wskaźnika MACD oraz SIGNAL dla kursu walutowego KRW/PLN.}
+    \label{fig:all:krw_pln_macd_signal}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_pln_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego KRW/PLN.}
+    \label{fig:all:krw_pln_value_buy_sell}
+\end{figure}
+
+\pagebreak
+
+
+
+
+
+
+
+\subsection{KRW/USD}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_usd_value.png}
+    \caption{Wykres kursu walutowego KRW/USD od 01.01.2019 do 31.12.2023.}
+    \label{fig:all:krw_usd_value}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_usd_macd_signal.png}
+    \caption{Wykres wskaźnika MACD oraz SIGNAL dla kursu walutowego KRW/USD.}
+    \label{fig:all:krw_usd_macd_signal}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{krw_usd_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego KRW/USD.}
+    \label{fig:all:krw_usd_value_buy_sell}
+\end{figure}
+
+\pagebreak
+
+
+
+
+
+
+\subsection{USD/PLN}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{usd_pln_value.png}
+    \caption{Wykres kursu walutowego USD/PLN od 01.01.2019 do 31.12.2023.}
+    \label{fig:all:usd_pln_value}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{usd_pln_macd_signal.png}
+    \caption{Wykres wskaźnika MACD oraz SIGNAL dla kursu walutowego USD/PLN.}
+    \label{fig:all:usd_pln_macd_signal}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.77\textwidth]{usd_pln_value_buy_sell.png}
+    \caption{Wykres sygnałów kupna oraz sprzedaży dla kursu walutowego USD/PLN.}
+    \label{fig:all:usd_pln_value_buy_sell}
+\end{figure}
+
 
 \end{document}

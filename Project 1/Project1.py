@@ -54,8 +54,8 @@ for file_counter, file_id in enumerate(file_ids):
             plt.figure(figsize=(15, 5))
             plt.plot(data['Date'], data['Value'])
             plt.title(title)
-            plt.xlabel('Date')
-            plt.ylabel('Exchange rate')
+            plt.xlabel('Data')
+            plt.ylabel('Kurs')
             plt.grid()
             if filename is not None:
                 plt.savefig(filename, bbox_inches='tight')
@@ -64,7 +64,7 @@ for file_counter, file_id in enumerate(file_ids):
         date_format = '%Y-%m-%d'
         first_date = data['Date'][0]
         last_date = data['Date'][len(data)-1]
-        plot_title = f'{currency_name}     ({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(data)} days)'
+        plot_title = f'{currency_name}     ({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(data)} dni)'
         if false_signals_offset == false_signal_offset_for_plot:
             plot_exchange_rate(data, plot_title, f'plots/{filename_prefix}_value.png')
 
@@ -149,8 +149,8 @@ for file_counter, file_id in enumerate(file_ids):
             plt.scatter(buy_data['Date'], buy_data['MACD'], color='green', marker='^')
             plt.scatter(sell_data['Date'], sell_data['MACD'], color='red', marker='v')
             plt.title(title)
-            plt.xlabel('Date')
-            plt.ylabel('Value')
+            plt.xlabel('Data')
+            plt.ylabel('Wartość')
             plt.grid()
             plt.legend(['MACD', 'SIGNAL', 'BUY', 'SELL'])
             if filename is not None:
@@ -161,8 +161,8 @@ for file_counter, file_id in enumerate(file_ids):
         first_date = tailed_data['Date'][0]
         last_date = tailed_data['Date'][len(tailed_data)-1]
         date_format = '%Y-%m-%d'
-        plot_title = f'MACD and SIGNAL for {currency_name}     \
-({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(tailed_data)} days)'
+        plot_title = f'MACD i SIGNAL dla {currency_name}     \
+({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(tailed_data)} dni)'
         if false_signals_offset == false_signal_offset_for_plot:
             plot_MACD_and_SIGNAL(tailed_data, title=plot_title, filename=f'plots/{filename_prefix}_macd_signal.png')
 
@@ -186,9 +186,9 @@ for file_counter, file_id in enumerate(file_ids):
             plt.bar(negative_histogram['Date'], negative_histogram['Histogram'] * hist_scale, color='red', alpha=0.5, bottom=average)
 
             plt.title(title)
-            plt.xlabel('Date')
-            plt.ylabel('Exchange rate')
-            plt.legend(['Exchange rate', 'BUY', 'SELL'])
+            plt.xlabel('Data')
+            plt.ylabel('Kurs')
+            plt.legend(['Kurs', 'BUY', 'SELL'])
             plt.grid()
             if filename is not None:
                 plt.savefig(filename, bbox_inches='tight')
@@ -197,8 +197,8 @@ for file_counter, file_id in enumerate(file_ids):
         plot_data = data.tail(plot_days_count).reset_index()
         first_date = plot_data['Date'][0]
         last_date = plot_data['Date'][len(plot_data)-1]
-        plot_title = f'{currency_name} with BUY/SELL points     \
-({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(plot_data)} days)'
+        plot_title = f'{currency_name} z punktami kupna/sprzedaży     \
+({first_date.strftime(date_format)} - {last_date.strftime(date_format)} | {len(plot_data)} dni)'
         if false_signals_offset == false_signal_offset_for_plot:
             plot_exchange_rate_with_buy_sell_points(plot_data, title=plot_title, filename=f'plots/{filename_prefix}_value_buy_sell.png')
 
