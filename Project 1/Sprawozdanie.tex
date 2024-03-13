@@ -156,14 +156,14 @@ ich liczbę, można zastosować dodatkowe filtry.
     \label{fig:eur_usd_value_buy_sell}
 \end{figure}
 
-Wykres przedstawia sygnały kupna oraz sprzedaży dla kursu walutowego EUR/USD 
+Wykres przedstawia sygnały kupna oraz sprzedaży dla kursu walutowego EUR/USD
 nałożone na wykres kursu walutowego. Można zauważyć, że punkty przecięcia linii MACD oraz sygnałowej
 zazwyczaj nie pokrywają się z szczytami oraz dołkami kursu walutowego. Zazwyczaj są one generowane
-z kilkudniowym opóźnieniem. 
+z kilkudniowym opóźnieniem.
 
 Wykres przedstawia również histogram wartości wskaźnika MACD. Przedstawia on różnicę
 pomiędzy wartościami wskaźnika MACD oraz SIGNAL. Wykres ten potwierdza obserwacje z poprzedniego
-wykresu. Jeśli pojawia się trend wzrostowy, to wartość histogramu staje się dodatnia dopiero 
+wykresu. Jeśli pojawia się trend wzrostowy, to wartość histogramu staje się dodatnia dopiero
 po kilku dniach. Analogiczna sytuacja występuje w przypadku trendu spadkowego.
 
 
@@ -178,7 +178,7 @@ po kilku dniach. Analogiczna sytuacja występuje w przypadku trendu spadkowego.
 \end{figure}
 
 Powyższy wykres jest analogiczny do poprzedniego. Można zauważyć, że sygnały, jak i histogram
-wskaźnika MACD, są generowane z opóźnieniem względem zmian kursu walutowego. W efekcie, większość 
+wskaźnika MACD, są generowane z opóźnieniem względem zmian kursu walutowego. W efekcie, większość
 transakcji  kupna oraz sprzedaży przynosi małe zyski lub straty.
 
 Wykresy dla pozostałych walut znajdują się w dodatku do sprawozdania (sekcja \ref{sec:Wykresy}).
@@ -252,6 +252,45 @@ Warto zauważyć, że optymalna wartość parametru filtra zależy od waluty.
 Zmiana wyników symulacji w zależności od wartości parametru filtra
 różni się w zależności od waluty. W średnim przypadku, najlepsze wyniki uzyskano dla 1 dniowego filtra.
 Zastosowanie filtrów dłuższych niż 2 dniowe nie przyniosło pozytywnych rezultatów.
+
+\bigskip
+\textbf{Wykresy pojedyńczych transakcji}
+
+\begin{figure}[ht]
+    \hspace{-1cm}
+    \begin{tabular}{cc}
+        \includegraphics[width=0.5\textwidth]{eurusd_transaction.png} &
+        \includegraphics[width=0.54\textwidth]{krwusd_transaction.png}               \\
+        Transakcja 1                                                  & Transakcja 2 \\
+    \end{tabular}
+    \label{fig:transactions}
+\end{figure}
+
+Powyższe wykresy przedstawiają pojedyńczą operację kupna oraz sprzedaży waluty
+dla odpowiednio kursu EUR/USD oraz KRW/USD. Obie transakcje bardzo dobrze
+ilustrują problem z opóźnieniem sygnałów kupna oraz sprzedaży względem kursu walutowego.
+
+W trasakcji pierwszej widzimy, że sygnał kupna został wygenerowany w momencie, gdy kurs
+już był blisko szczytu. Dopiero wtedy wtedy wartość wskaźnika MACD spadła poniżej wartości
+SIGNAL. Następnie, po kilku dniach, kurs osiąga szczyt. Jest to idealny moment, aby 
+sprzedać kupioną walutę. Następnie, po kilku dniach, kurs zaczyna gwałtownie spadać.
+Wskaźnik MACD generuje sygnał sprzedaży, ale w momencie, gdy kurs jest już blisko dołka.
+W efekcie sprzedajemy walutę w momencie, gdy kurs jest niżej niż w momencie jej zakupu.
+
+W transakcji drugiej sytuacja jest podobna. Sygnał kupna generowany jest w momencie,
+gdy kurs rośnie już od kilku dni. Uniemożliwia to uzyskanie maksymalnego zysku z transakcji.
+Następnie kurs osiąga szczyt, a następnie zaczyna spadać. Przez krótki okres
+spada gwałtownie, co powoduje wygenerowanie sygnału sprzedaży za kilka dni. Kurs szybko
+odbija, co powoduje optymalną dla nas sytuację, aby sprzedać walutę.
+Nie spadł tak nisko, jak w momencie zakupu, co pozwala na uzyskanie zysku.
+Jest jednak widoczne, że sygnały kupna oraz sprzedaży generowane są z opóźnieniem.
+
+Wnioskując z powyższych wykresów, można stwierdzić, że wskaźnik MACD generuje
+sygnały poprawne, ale opóźnione o kilka dni. Jeśli nałożyć na wykresy sygnały
+kilka dni wcześniej, to zysk z transakcji byłby znacznie większy. Nie jest
+to jednak możliwe w czasie rzeczywistym.
+
+
 
 \section{Wnioski}
 Dla kursu walutowego EUR/USD, wskaźnik MACD okazał się częściowo skuteczny.
