@@ -42,8 +42,10 @@ class Matrix:
         data = Matrix.new(n, p)
         for i in range(n):
             for j in range(p):
+                value = 0
                 for k in range(m):
-                    data[i][j] += self[i][k] * other[k][j]
+                    value += self[i][k] * other[k][j]
+                data[i][j] = value
 
         return data
     
