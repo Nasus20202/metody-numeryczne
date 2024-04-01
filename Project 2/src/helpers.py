@@ -3,10 +3,10 @@ from matrix import Matrix
 from IPython.display import display, Math
 from math import sin
 
-def display_matrix(matrix: Matrix, max_rows: int = 20, max_cols: int = 20, precision: int = 2) -> None:
+def display_matrix(matrix: Matrix, max_rows: int = 20, max_cols: int = 20, precision: int = 4) -> None:
     display(Math(matrix.as_latex(max_rows, max_cols, precision)))
 
-def display_matrices(matrices: list[Tuple[Matrix, str]], max_rows: int = 20, max_cols: int = 20, precision: int = 2) -> None:
+def display_matrices(matrices: list[Tuple[Matrix, str]], max_rows: int = 20, max_cols: int = 20, precision: int = 4) -> None:
     display(Math(''.join([f"{name} = {matrix.as_latex(max_rows, max_cols, precision)}" for matrix, name in matrices])))
 
 def generate_A_matrix(N: int, a1: int, a2: int, a3: int) -> Matrix:

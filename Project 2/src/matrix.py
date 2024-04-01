@@ -9,7 +9,7 @@ class Matrix:
             for elem in row:
                 str += f"{elem}\t"
             str += "\n"
-        return str[:-1]
+        return str
     
     def __getitem__(self, index: int) -> list[float]:
         return self.data[index]
@@ -35,17 +35,17 @@ class Matrix:
 
         if self.shape[1] != other.shape[0]:
             raise ValueError("Number of columns in the first matrix must be equal to the number of rows in the second matrix")
-        
+
         n = self.shape[0]
         m = self.shape[1]
         p = other.shape[1]
-        data = [[0 for _ in range(p)] for _ in range(n)]
+        data = Matrix.new(n, p)
         for i in range(n):
             for j in range(p):
                 for k in range(m):
                     data[i][j] += self[i][k] * other[k][j]
 
-        return Matrix(data)
+        return data
     
     def set_diagonal(self, value: float, diagonal: int = 0) -> 'Matrix':
         for i in range(self.shape[0]):
@@ -53,6 +53,13 @@ class Matrix:
                 if i - j == diagonal:
                     self.data[i][j] = value
         return self
+    
+    def norm(self) -> float:
+        result = 0
+        for row in self.data:
+            for elem in row:
+                result += elem ** 2
+        return result ** 0.5
     
     def as_latex(self, max_rows: int = 20, max_cols: int = 20, precision: int = 2) -> str:
         data = self.data
@@ -104,6 +111,9 @@ class Matrix:
         result += ')'
 
         return result
+    
+    def copy(self) -> 'Matrix':
+        return Matrix([row.copy() for row in self.data])
 
     @staticmethod
     def vectorize_list(data: list) -> 'Matrix':
