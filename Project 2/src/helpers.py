@@ -2,6 +2,8 @@ from typing import Tuple
 from matrix import Matrix
 from IPython.display import display, Math
 from math import sin
+import os
+from functools import partial
 
 def display_matrix(matrix: Matrix, max_rows: int = 20, max_cols: int = 20, precision: int = 4) -> None:
     display(Math(matrix.as_latex(max_rows, max_cols, precision)))
@@ -22,3 +24,17 @@ def generate_b_vector(N: int, f: int) -> Matrix:
     for i in range(N):
         data.append(sin((i+1) * (f + 1)))
     return Matrix.vectorize_list(data)
+
+def result_cache(func: partial, serializer: callable, deserializer: callable, file_name: str, cache_dir: str = "../results"):
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+    
+    if os.path.exists(f"{cache_dir}/{file_name}"):
+        with open(f"{cache_dir}/{file_name}", "r") as file:
+            return deserializer(file.read())
+    else:
+        result = func()
+        with open(f"{cache_dir}/{file_name}", "w") as file:
+            file.write(serializer(result))
+        return result
+    

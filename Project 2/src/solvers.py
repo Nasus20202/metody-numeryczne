@@ -1,5 +1,6 @@
 import time
 from matrix import Matrix
+import json
 
 class SolverResult:
     def __init__(self, x: Matrix, error: float, error_history: list[float], iterations: int,  time: float, finished: bool = True):
@@ -9,6 +10,15 @@ class SolverResult:
         self.iterations = iterations
         self.time = time
         self.finished = finished
+
+     
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+    
+    @staticmethod
+    def fromJSON(json_str):
+        data = json.loads(json_str)
+        return SolverResult(Matrix(data['x']['data']), data['error'], data['error_history'], data['iterations'], data['time'], data['finished'])
         
 def validate_matrices(A: Matrix, b: Matrix) -> None:
     if A.shape[0] != A.shape[1]:
