@@ -44,8 +44,8 @@ class Matrix:
             for j in range(p):
                 value = 0
                 for k in range(m):
-                    value += self[i][k] * other[k][j]
-                data[i][j] = value
+                    value += self.data[i][k] * other.data[k][j]
+                data.data[i][j] = value
 
         return data
     

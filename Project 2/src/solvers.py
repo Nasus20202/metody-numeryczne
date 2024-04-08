@@ -44,7 +44,7 @@ def solve_jacobi(A: Matrix, b: Matrix, precision: float = 1e-12, error_threshold
     while error > precision:
         new_x = Matrix.vector(n)
         for i in range(n):
-            new_x[i][0] = 1/A[i][i] * (b[i][0] - sum([A[i][j] * x[j][0] for j in range(n) if j != i]))
+            new_x.data[i][0] = 1/A.data[i][i] * (b.data[i][0] - sum([A.data[i][j] * x.data[j][0] for j in range(n) if j != i]))
         x = new_x
         iterations += 1
         error = (A * x - b).norm()
@@ -72,7 +72,7 @@ def solve_gauss_seidel(A: Matrix, b: Matrix, precision: float = 1e-12, error_thr
     while error > precision:
         new_x = Matrix.vector(n)
         for i in range(n):
-            new_x[i][0] = 1/A[i][i] * (b[i][0] - sum([A[i][j] * new_x[j][0] for j in range(i)]) - sum([A[i][j] * x[j][0] for j in range(i+1, n)]))
+            new_x.data[i][0] = 1/A.data[i][i] * (b.data[i][0] - sum([A.data[i][j] * new_x.data[j][0] for j in range(i)]) - sum([A.data[i][j] * x.data[j][0] for j in range(i+1, n)]))
         x = new_x
         iterations += 1
         error = (A * x - b).norm()
@@ -98,11 +98,11 @@ def lu_decomposition(A: Matrix) -> tuple[Matrix, Matrix]:
     for i in range(n):
         # upper triangular
         for j in range(i, n):
-            U[i][j] = A[i][j] - sum([L[i][k] * U[k][j] for k in range(i)])
+            U.data[i][j] = A.data[i][j] - sum([L.data[i][k] * U.data[k][j] for k in range(i)])
 
-        # lower triangular
+        # lower triangular.data
         for j in range(i+1, n):
-            L[j][i] = 1/U[i][i] * (A[j][i] - sum([L[j][k] * U[k][i] for k in range(i)]))
+            L.data[j][i] = 1/U.data[i][i] * (A.data[j][i] - sum([L.data[j][k] * U.data[k][i] for k in range(i)]))
 
     return L, U
 
@@ -113,7 +113,7 @@ def solve_forward_substitution(L: Matrix, b: Matrix) -> Matrix:
     n = L.shape[0]
     x = Matrix.vector(n)
     for m in range(n):
-        x[m][0] = 1/L[m][m] * (b[m][0] - sum([L[m][i] * x[i][0] for i in range(m)]))
+        x.data[m][0] = 1/L.data[m][m] * (b.data[m][0] - sum([L.data[m][i] * x.data[i][0] for i in range(m)]))
     return x
 
 def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
@@ -124,7 +124,7 @@ def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
     n = U.shape[0]
     x = Matrix.vector(n)
     for m in range(n-1, -1, -1):
-        x[m][0] = 1/U[m][m] * (b[m][0] - sum([U[m][i] * x[i][0] for i in range(m+1, n)]))
+        x.data[m][0] = 1/U.data[m][m] * (b.data[m][0] - sum([U.data[m][i] * x.data[i][0] for i in range(m+1, n)]))
     return x
 
 
