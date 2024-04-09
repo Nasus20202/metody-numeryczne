@@ -31,7 +31,7 @@ def validate_matrices(A: Matrix, b: Matrix) -> None:
 def solve_jacobi(A: Matrix, b: Matrix, precision: float = 1e-12, error_threshold: float = 1e12) -> SolverResult:
     validate_matrices(A, b)
     
-    # https://en.wikipedia.org/wiki/Jacobi_method#Matrix-based_formula
+    # https://en.wikipedia.org/wiki/Jacobi_method#Element-based_formula
     n = A.shape[0]
 
     x = Matrix.vector(n)
@@ -44,7 +44,7 @@ def solve_jacobi(A: Matrix, b: Matrix, precision: float = 1e-12, error_threshold
     while error > precision:
         new_x = Matrix.vector(n)
         for i in range(n):
-            new_x.data[i][0] = 1/A.data[i][i] * (b.data[i][0] - sum([A.data[i][j] * x.data[j][0] for j in range(n) if j != i]))
+            new_x.data[i][0] = (b.data[i][0] - sum([A.data[i][j] * x.data[j][0] for j in range(n) if j != i])) / A.data[i][i]
         x = new_x
         iterations += 1
         error = (A * x - b).norm()
@@ -72,7 +72,7 @@ def solve_gauss_seidel(A: Matrix, b: Matrix, precision: float = 1e-12, error_thr
     while error > precision:
         new_x = Matrix.vector(n)
         for i in range(n):
-            new_x.data[i][0] = 1/A.data[i][i] * (b.data[i][0] - sum([A.data[i][j] * new_x.data[j][0] for j in range(i)]) - sum([A.data[i][j] * x.data[j][0] for j in range(i+1, n)]))
+            new_x.data[i][0] = (b.data[i][0] - sum([A.data[i][j] * new_x.data[j][0] for j in range(i)]) - sum([A.data[i][j] * x.data[j][0] for j in range(i+1, n)])) / A.data[i][i]
         x = new_x
         iterations += 1
         error = (A * x - b).norm()
@@ -102,7 +102,7 @@ def lu_decomposition(A: Matrix) -> tuple[Matrix, Matrix]:
 
         # lower triangular.data
         for j in range(i+1, n):
-            L.data[j][i] = 1/U.data[i][i] * (A.data[j][i] - sum([L.data[j][k] * U.data[k][i] for k in range(i)]))
+            L.data[j][i] = (A.data[j][i] - sum([L.data[j][k] * U.data[k][i] for k in range(i)])) / U.data[i][i]
 
     return L, U
 
@@ -110,10 +110,11 @@ def solve_forward_substitution(L: Matrix, b: Matrix) -> Matrix:
     validate_matrices(L, b)
 
     # https://en.wikipedia.org/wiki/Triangular_matrix#Forward_and_back_substitution
+    # https://algowiki-project.org/en/Forward_substitution
     n = L.shape[0]
     x = Matrix.vector(n)
     for m in range(n):
-        x.data[m][0] = 1/L.data[m][m] * (b.data[m][0] - sum([L.data[m][i] * x.data[i][0] for i in range(m)]))
+        x.data[m][0] = b.data[m][0] - (sum([L.data[m][i] * x.data[i][0] for i in range(m)]))
     return x
 
 def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
@@ -124,7 +125,7 @@ def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
     n = U.shape[0]
     x = Matrix.vector(n)
     for m in range(n-1, -1, -1):
-        x.data[m][0] = 1/U.data[m][m] * (b.data[m][0] - sum([U.data[m][i] * x.data[i][0] for i in range(m+1, n)]))
+        x.data[m][0] = (b.data[m][0] - sum([U.data[m][i] * x.data[i][0] for i in range(m+1, n)])) / U.data[m][m]
     return x
 
 

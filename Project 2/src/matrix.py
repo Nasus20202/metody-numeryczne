@@ -50,10 +50,11 @@ class Matrix:
         return data
     
     def set_diagonal(self, value: float, diagonal: int = 0) -> 'Matrix':
+        if self.shape[0] != self.shape[1]:
+            raise ValueError("Matrix must be square")
         for i in range(self.shape[0]):
-            for j in range(self.shape[1]):
-                if i - j == diagonal:
-                    self.data[i][j] = value
+            if 0 <= i + diagonal < self.shape[0]:
+                self.data[i][i + diagonal] = value
         return self
     
     def norm(self) -> float:
