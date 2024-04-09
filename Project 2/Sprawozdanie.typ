@@ -99,13 +99,13 @@ b = mat(
   -0.91;
   0.27;
   dots.h;
-  0.89;
   -0.23;
   -0.59;
   1.0;
   -0.71;
   -0.06;
   0.8;
+  -0.98;
 )
 $
 
@@ -160,10 +160,10 @@ b = mat(
   -0.29;
   0.91;
   dots.h;
-  1.0;
   -0.71;
   -0.06;
   0.8;
+  -0.98;
 )
 $
 
@@ -230,19 +230,19 @@ Należy pamiętać, że obliczenia zostały wykonane przy pomocy programu napisa
     table.header(
       [*Rozmiar macierzy*], [*Python (Gauss-Seidel)*], [*C++ (Gauss-Seidel)*], [*Python (LU)*], [*C++ (LU)*]
     ),
-    "100x100", "0.0299448s", "0.001769s", "0.0329174s", "0.0020257s",
-    "500x500", "0.7027835s", "0.031319s", "4.27673s", "0.21947s",
-    "1000x1000", "3.0135801s", "0.120486s", "42.61127s", "1.77916s",
-    "1500x1500", "6.8342752s", "0.226797s", "159.92739s", "6.11527s",
-    "2000x2000", "10.7253274s", "0.473717s", "406.9541s", "16.0557s",
-    "2500x2500", "19.1137278s", "0.731991s", "835.0686s", "33.435s",
-    "3000x3000", "27.4157338s", "0.989686s", "1511.1448s", "58.8633s"
+    "100x100", "0.03s", "0.003s", "0.033s", "0.001s",
+    "500x500", "0.703s", "0.031s", "4.277s", "0.174s",
+    "1000x1000", "3.014s", "0.112s", "42.611s", "1.41s",
+    "1500x1500", "6.834s", "0.212s", "159.927s", "4.87s",
+    "2000x2000", "10.725s", "0.438s", "406.954s", "11.881s",
+    "2500x2500", "19.113s", "0.674s", "835.069s", "27.152s",
+    "3000x3000", "27.416s", "0.928s", "1511.145s", "48.847s"
   )
 ]
 
 #image("plots/time-cpp.png")
 
-Jak można zauważyć, wykres jest podobny do poprzedniego. Ten sam algorytm został zaimplementowany, dlatego jego złożoność obliczeniowa jest taka sama. Warto jednak zwrócić uwagę, że bezwględne czasy wykonania programów są znacznie krótsze. Dla metody Gaussa-Seidela dla macierzy o rozmiarze 1000x1000, czas wykonania w języku Python wynosi 3.0s, natomiast w języku C++ 0.12s. Dla metody faktoryzacji LU dla tej samej macierzy, czas wykonania w języku Python wynosi 42.6s, natomiast w języku C++ 1.78s. W przypadku faktoryzacji LU macierzy o rozmiarze 3000x3000, czas wykonania w języku Python wynosi ponad 25 minut, natomiast w języku C++ - 58.9s.
+Jak można zauważyć, wykres jest podobny do poprzedniego. Ten sam algorytm został zaimplementowany, dlatego jego złożoność obliczeniowa jest taka sama. Warto jednak zwrócić uwagę, że bezwględne czasy wykonania programów są znacznie krótsze. Dla metody Gaussa-Seidela dla macierzy o rozmiarze 1000x1000, czas wykonania w języku Python wynosi 3.0s, natomiast w języku C++ 0.11s. Dla metody faktoryzacji LU dla tej samej macierzy, czas wykonania w języku Python wynosi 42.6s, natomiast w języku C++ 1.41s. W przypadku faktoryzacji LU macierzy o rozmiarze 3000x3000, czas wykonania w języku Python wynosi ponad 25 minut, natomiast w języku C++ - 48.9s.
 
 = Podsumowanie
 

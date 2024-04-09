@@ -34,10 +34,10 @@ SolverResult solveJacobi(Matrix& A, Matrix& b, double precision, double error_th
             double sum = 0;
             for (int j = 0; j < n; j++) {
                 if (j != i) {
-                    sum += A[i][j] * x[j][0];
+                    sum += A(i, j) * x(j, 0);
                 }
             }
-            new_x[i][0] = (b[i][0] - sum) / A[i][i];
+            new_x(i, 0) = (b(i, 0) - sum) / A(i, i);
         }
         x = new_x;
         iterations++;
@@ -72,13 +72,13 @@ SolverResult solveGaussSeidel(Matrix& A, Matrix& b, double precision, double err
         for (int i = 0; i < n; i++) {
             double sum1 = 0;
             for (int j = 0; j < i; j++) {
-                sum1 += A[i][j] * new_x[j][0];
+                sum1 += A(i, j) * new_x(j, 0);
             }
             double sum2 = 0;
             for (int j = i + 1; j < n; j++) {
-                sum2 += A[i][j] * x[j][0];
+                sum2 += A(i, j) * x(j, 0);
             }
-            new_x[i][0] = (b[i][0] - sum1 - sum2) / A[i][i];
+            new_x(i, 0) = (b(i, 0) - sum1 - sum2) / A(i, i);
         }
         x = new_x;
         iterations++;
@@ -106,24 +106,24 @@ std::pair<Matrix, Matrix> luDecomposition(Matrix& A) {
     Matrix U(n, n);
 
     for (int i = 0; i < n; i++) {
-        L[i][i] = 1;
+        L(i, i) = 1;
     }
 
     for (int i = 0; i < n; i++) {
         for (int j = i; j < n; j++) {
             double sum = 0;
             for (int k = 0; k < i; k++) {
-                sum += L[i][k] * U[k][j];
+                sum += L(i, k) * U(k, j);
             }
-            U[i][j] = A[i][j] - sum;
+            U(i, j) = A(i, j) - sum;
         }
 
         for (int j = i; j < n; j++) {
             double sum = 0;
             for (int k = 0; k < i; k++) {
-                sum += L[j][k] * U[k][i];
+                sum += L(j, k) * U(k, i);
             }
-            L[j][i] = (A[j][i] - sum) / U[i][i];
+            L(j, i) = (A(j, i) - sum) / U(i, i);
         }
     }
 
@@ -134,7 +134,9 @@ SolverResult solveLU(Matrix& A, Matrix& b) {
     validateMatrices(A, b);
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto [L, U] = luDecomposition(A);
+    std::pair<Matrix, Matrix> lu = luDecomposition(A);
+    Matrix L = lu.first;
+    Matrix U = lu.second;
 
     // https://en.wikipedia.org/wiki/LU_decomposition#Solving_linear_equations
     int n = A.shape.first;
@@ -143,18 +145,18 @@ SolverResult solveLU(Matrix& A, Matrix& b) {
     for (int i = 0; i < n; i++) {
         double sum = 0;
         for (int j = 0; j < i; j++) {
-            sum += L[i][j] * y[j][0];
+            sum += L(i, j) * y(j, 0);
         }
-        y[i][0] = (b[i][0] - sum) / L[i][i];
+        y(i, 0) = (b(i, 0) - sum) / L(i, i);
     }
 
     Matrix x(n, 1);
     for (int i = n - 1; i >= 0; i--) {
         double sum = 0;
         for (int j = i + 1; j < n; j++) {
-            sum += U[i][j] * x[j][0];
+            sum += U(i, j) * x(j, 0);
         }
-        x[i][0] = (y[i][0] - sum) / U[i][i];
+        x(i, 0) = (y(i, 0) - sum) / U(i, i);
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     double total_time = std::chrono::duration<double>(end_time - start_time).count();

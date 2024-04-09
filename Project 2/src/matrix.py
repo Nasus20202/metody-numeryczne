@@ -71,10 +71,10 @@ class Matrix:
         
         if rows > max_rows:
             data = data[:max_rows//2] + [['...'] * cols] + data[-max_rows//2:]
-            rows = max_rows
+            rows = max_rows+1
         if cols > max_cols:
             data = [row[:max_cols//2] + ['...'] + row[-max_cols//2:] for row in data]
-            cols = max_cols
+            cols = max_cols+1
         for row in range(rows):
             for col in range(cols):
                 if type(data[row][col]) is float:
@@ -96,10 +96,10 @@ class Matrix:
 
         if rows > max_rows:
             data = data[:max_rows//2] + [['dots.h'] * cols] + data[-max_rows//2:]
-            rows = max_rows
+            rows = max_rows+1
         if cols > max_cols:
             data = [row[:max_cols//2] + ['dots.h'] + row[-max_cols//2:] for row in data]
-            cols = max_cols
+            cols = max_cols+1
         for row in range(rows):
             for col in range(cols):
                 if type(data[row][col]) is float:

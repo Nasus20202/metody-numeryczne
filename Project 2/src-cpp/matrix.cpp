@@ -1,18 +1,27 @@
 #include "matrix.h"
 #include <cmath>
 
-Matrix::Matrix(const std::vector<std::vector<double>> &data) : data(data)
+Matrix::Matrix(const std::vector<std::vector<double>> &data)
 {
     shape = {data.size(), data[0].size()};
+    this->data = std::vector<double>(shape.first * shape.second);
+    for (int i = 0; i < shape.first; i++)
+    {
+        for (int j = 0; j < shape.second; j++)
+        {
+            this->data[i * shape.second + j] = data[i][j];
+        }
+    }
 }
 
-Matrix::Matrix(const int rows, const int cols) : data(rows, std::vector<double>(cols)), shape({rows, cols})
+Matrix::Matrix(const int rows, const int cols) : shape({rows, cols})
 {
+    data = std::vector<double>(rows * cols, 0.0f);
 }
 
-std::vector<double> &Matrix::operator[](int index)
+double &Matrix::operator()(int x, int y)
 {
-    return data[index];
+    return data[x * shape.second + y];
 }
 
 bool Matrix::operator==(const Matrix &other) const
@@ -24,7 +33,7 @@ bool Matrix::operator==(const Matrix &other) const
     return data == other.data;
 }
 
-Matrix Matrix::operator+(const Matrix &other) const
+Matrix Matrix::operator+(Matrix &other)
 {
     if (shape != other.shape)
     {
@@ -35,13 +44,13 @@ Matrix Matrix::operator+(const Matrix &other) const
     {
         for (int j = 0; j < shape.second; j++)
         {
-            result[i][j] = data[i][j] + other.data[i][j];
+            result[i][j] = this->operator()(i, j) + other(i, j);
         }
     }
     return Matrix(result);
 }
 
-Matrix Matrix::operator-(const Matrix &other) const
+Matrix Matrix::operator-(Matrix &other)
 {
     if (shape != other.shape)
     {
@@ -52,13 +61,13 @@ Matrix Matrix::operator-(const Matrix &other) const
     {
         for (int j = 0; j < shape.second; j++)
         {
-            result[i][j] = data[i][j] - other.data[i][j];
+            result[i][j] = this->operator()(i, j) - other(i, j);
         }
     }
     return Matrix(result);
 }
 
-Matrix Matrix::operator*(const Matrix &other) const
+Matrix Matrix::operator*(Matrix &other)
 {
     if (shape.second != other.shape.first)
     {
@@ -74,21 +83,21 @@ Matrix Matrix::operator*(const Matrix &other) const
         {
             for (int k = 0; k < m; k++)
             {
-                result[i][j] += data[i][k] * other.data[k][j];
+                result[i][j] += this->operator()(i, k) * other(k, j);
             }
         }
     }
     return Matrix(result);
 }
 
-Matrix Matrix::operator*(double scalar) const
+Matrix Matrix::operator*(double scalar)
 {
     std::vector<std::vector<double>> result(shape.first, std::vector<double>(shape.second));
     for (int i = 0; i < shape.first; i++)
     {
         for (int j = 0; j < shape.second; j++)
         {
-            result[i][j] = data[i][j] * scalar;
+            result[i][j] = this->operator()(i, j) * scalar;
         }
     }
     return Matrix(result);
@@ -104,7 +113,7 @@ Matrix &Matrix::set_diagonal(double value, int diagonal)
     {
         if (0 <= i + diagonal && i + diagonal < shape.second)
         {
-            data[i][i + diagonal] = value;
+            this->operator()(i, i + diagonal) = value;
         }
     }
     return *this;
@@ -113,12 +122,9 @@ Matrix &Matrix::set_diagonal(double value, int diagonal)
 double Matrix::norm() const
 {
     double result = 0.0f;
-    for (const auto &row : data)
+    for (const double elem : data)
     {
-        for (double elem : row)
-        {
-            result += elem * elem;
-        }
+        result += elem * elem;
     }
     return std::sqrt(result);
 }
@@ -126,13 +132,14 @@ double Matrix::norm() const
 std::ostream &operator<<(std::ostream &os, const Matrix &matrix)
 {
     os << "Matrix(" << matrix.shape.first << "x" << matrix.shape.second << ")\n";
-    for (const auto &row : matrix.data)
+    int counter = 0;
+    for (const double elem : matrix.data)
     {
-        for (double elem : row)
+        os << elem << "\t";
+        if (++counter % matrix.shape.second == 0)
         {
-            os << elem << "\t";
+            os << "\n";
         }
-        os << "\n";
     }
     return os;
 }
