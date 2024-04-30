@@ -12,21 +12,24 @@ def test_linspace():
     assert result == expected
 
 def test_lagrange_interpolation_for_point():
-    data = Matrix([[0, 4], [2, 1], [3, 6], [4, 1]])
+    x_points = [0, 2, 3, 4]
+    y_points = [4, 1, 6, 1]
 
-    yminus1 = lagrange_interpolation_for_point(-1, data)
-    y1 = lagrange_interpolation_for_point(1, data)
-    y5 = lagrange_interpolation_for_point(5, data)
+    yminus1 = lagrange_interpolation_for_point(-1, x_points, y_points)
+    y1 = lagrange_interpolation_for_point(1, x_points, y_points)
+    y5 = lagrange_interpolation_for_point(5, x_points, y_points)
 
     assert yminus1 == 33.5
     assert y1 == -3.25
     assert y5 == -24.75
 
 def test_lagrange_interpolation():
-    x = Matrix([[-1], [1], [5]])
-    data = Matrix([[0, 4], [2, 1], [3, 6], [4, 1]])
+    x = [-1, 1, 5]
+    x_points = [0, 2, 3, 4]
+    y_points = [4, 1, 6, 1]
 
-    result = lagrange_interpolation(x, data)
 
-    expected = Matrix([[-1, 33.5], [1, -3.25], [5, -24.75]])
-    assert result == expected
+    y = lagrange_interpolation(x, x_points, y_points)
+
+    expected = [33.5, -3.25, -24.75]
+    assert y == expected
