@@ -11,6 +11,16 @@ def test_linspace():
 
     assert result == expected
 
+def test_generate_chebyshev_nodes():
+    start = -1
+    stop = 1
+    n = 20
+
+    result = generate_chebyshev_nodes(start, stop, n)
+    expected = [math.cos((2 * k + 1) * math.pi / (2 * n)) for k in range(n)]
+
+    assert result == expected
+
 def test_lagrange_interpolation_for_point():
     x_points = [0, 2, 3, 4]
     y_points = [4, 1, 6, 1]
