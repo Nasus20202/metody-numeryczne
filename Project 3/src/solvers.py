@@ -84,7 +84,7 @@ def solve_gauss_seidel(A: Matrix, b: Matrix, precision: float = 1e-12, error_thr
     total_time = (end_time - start_time) / 1e9
     return SolverResult(x, error, error_history, iterations, total_time, finished)
 
-def lu_decomposition(A: Matrix) -> tuple[Matrix, Matrix]:
+def lu_decomposition(A: Matrix, pivot: bool = False) -> tuple[Matrix, Matrix]:
     if A.shape[0] != A.shape[1]:
         raise ValueError("Matrix A must be square")
     
@@ -96,6 +96,20 @@ def lu_decomposition(A: Matrix) -> tuple[Matrix, Matrix]:
     
     L.set_diagonal(1)
     for i in range(n):
+        if pivot:
+            # Find the index of the maximum element in the i-th column
+            max_index = max(range(i, n), key=lambda x: abs(A.data[x][i]))
+
+            # Swap rows in A
+            A.data[i], A.data[max_index] = A.data[max_index], A.data[i]
+
+            # Swap rows in L
+            if i > 0:
+                # L.data[i][:i], L.data[max_index][:i] = L.data[max_index][:i], L.data[i][:i]
+                for j in range(i):
+                    L.data[i][j], L.data[max_index][j] = L.data[max_index][j], L.data[i][j]
+
+
         # upper triangular
         for j in range(i, n):
             U.data[i][j] = A.data[i][j] - sum([L.data[i][k] * U.data[k][j] for k in range(i)])
@@ -129,14 +143,14 @@ def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
     return x
 
 
-def solve_lu_decomposition(A: Matrix, b: Matrix) -> SolverResult:
+def solve_lu_decomposition(A: Matrix, b: Matrix, pivot: bool = False) -> SolverResult:
     validate_matrices(A, b)
 
     # https://en.wikipedia.org/wiki/LU_decomposition
     # https://www.sheffield.ac.uk/media/32074/download?attachment
 
     start_time = time.perf_counter_ns()
-    L, U = lu_decomposition(A)
+    L, U = lu_decomposition(A, pivot)
     
     n = A.shape[0]
     x = Matrix.vector(n)
