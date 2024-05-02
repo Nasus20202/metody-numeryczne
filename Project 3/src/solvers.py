@@ -1,25 +1,6 @@
 import time
 from matrix import Matrix
-import json
-
-class SolverResult:
-    def __init__(self, x: Matrix, error: float, error_history: list[float], iterations: int,  time: float, finished: bool = True):
-        self.x = x
-        self.error = error
-        self.error_history = error_history
-        self.iterations = iterations
-        self.time = time
-        self.finished = finished
-
-     
-    def toJSON(self):
-        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
-    
-    @staticmethod
-    def fromJSON(json_str):
-        data = json.loads(json_str)
-        return SolverResult(Matrix(data['x']['data']), data['error'], data['error_history'], data['iterations'], data['time'], data['finished'])
-        
+   
 def validate_matrices(A: Matrix, b: Matrix) -> None:
     if A.shape[0] != A.shape[1]:
         raise ValueError("Matrix A must be square")
@@ -28,63 +9,20 @@ def validate_matrices(A: Matrix, b: Matrix) -> None:
     if b.shape[1] != 1:
         raise ValueError("Vector b must have only one column")
 
-def solve_jacobi(A: Matrix, b: Matrix, precision: float = 1e-12, error_threshold: float = 1e12) -> SolverResult:
-    validate_matrices(A, b)
-    
-    # https://en.wikipedia.org/wiki/Jacobi_method#Element-based_formula
-    n = A.shape[0]
+def pivot(U: Matrix, L: Matrix, P: Matrix, i: int) -> None:
+    n = U.shape[0]
+    max_value = 0
+    max_index = i
+    for j in range(i, n):
+        if abs(U.data[j][i]) > max_value:
+            max_value = abs(U.data[j][i])
+            max_index = j
+    if max_index != i:
+        U.data[i], U.data[max_index] = U.data[max_index], U.data[i]
+        L.data[i], L.data[max_index] = L.data[max_index], L.data[i]
+        P.data[i], P.data[max_index] = P.data[max_index], P.data[i]
 
-    x = Matrix.vector(n)
-    error = float('inf')
-    error_history = []
-    iterations = 0
-    finished = True
-
-    start_time = time.perf_counter_ns()
-    while error > precision:
-        new_x = Matrix.vector(n)
-        for i in range(n):
-            new_x.data[i][0] = (b.data[i][0] - sum([A.data[i][j] * x.data[j][0] for j in range(n) if j != i])) / A.data[i][i]
-        x = new_x
-        iterations += 1
-        error = (A * x - b).norm()
-        error_history.append(error)
-        if error > error_threshold:
-            finished = False
-            break
-    end_time = time.perf_counter_ns() 
-    total_time = (end_time - start_time) / 1e9
-    return SolverResult(x, error, error_history, iterations, total_time, finished)
-
-def solve_gauss_seidel(A: Matrix, b: Matrix, precision: float = 1e-12, error_threshold: float = 1e12) -> SolverResult:
-    validate_matrices(A, b)
-    
-    # https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method#Element-based_formula
-    n = A.shape[0]
-
-    x = Matrix.vector(n)
-    error = float('inf')
-    error_history = []
-    iterations = 0
-    finished = True
-
-    start_time = time.perf_counter_ns()
-    while error > precision:
-        new_x = Matrix.vector(n)
-        for i in range(n):
-            new_x.data[i][0] = (b.data[i][0] - sum([A.data[i][j] * new_x.data[j][0] for j in range(i)]) - sum([A.data[i][j] * x.data[j][0] for j in range(i+1, n)])) / A.data[i][i]
-        x = new_x
-        iterations += 1
-        error = (A * x - b).norm()
-        error_history.append(error)
-        if error > error_threshold:
-            finished = False
-            break
-    end_time = time.perf_counter_ns() 
-    total_time = (end_time - start_time) / 1e9
-    return SolverResult(x, error, error_history, iterations, total_time, finished)
-
-def lu_decomposition(A: Matrix, pivot: bool = False) -> tuple[Matrix, Matrix]:
+def lu_decomposition(A: Matrix) -> tuple[Matrix, Matrix, Matrix]:
     if A.shape[0] != A.shape[1]:
         raise ValueError("Matrix A must be square")
     
@@ -92,40 +30,24 @@ def lu_decomposition(A: Matrix, pivot: bool = False) -> tuple[Matrix, Matrix]:
     # https://www.geeksforgeeks.org/doolittle-algorithm-lu-decomposition/
     n = A.shape[0]
     L = Matrix.new(n, n)
-    U = Matrix.new(n, n)
+    U = A.copy()
+    P = Matrix.new(n, n)
     
     L.set_diagonal(1)
-    if pivot:
-        P = Matrix.new(n, n)
-        P.set_diagonal(1)
-
-    if pivot:
-        for i in range(n):
-                # Find the index of the maximum element in the i-th column
-                max_index = max(range(i, n), key=lambda x: abs(A.data[x][i]))
-
-                # Swap rows in A
-                A.data[i], A.data[max_index] = A.data[max_index], A.data[i]
-                P.data[i], P.data[max_index] = P.data[max_index], P.data[i]
-
-                # Swap rows in L
-                if i > 0:
-                    # L.data[i][:i], L.data[max_index][:i] = L.data[max_index][:i], L.data[i][:i]
-                    for j in range(i):
-                        L.data[i][j], L.data[max_index][j] = L.data[max_index][j], L.data[i][j]
+    P.set_diagonal(1)
 
     for i in range(n):
-        # upper triangular
-        for j in range(i, n):
-            U.data[i][j] = A.data[i][j] - sum([L.data[i][k] * U.data[k][j] for k in range(i)])
-
-        # lower triangular.data
+        pivot(U, L, P, i)
         for j in range(i+1, n):
-            L.data[j][i] = (A.data[j][i] - sum([L.data[j][k] * U.data[k][i] for k in range(i)])) / U.data[i][i]
+            # lower triangular
+            L.data[j][i] = U.data[j][i] / U.data[i][i]
 
-    if pivot:
-        return P, L, U
-    return L, U
+            # upper triangular
+            for k in range(i, n):
+                U.data[j][k] -= L.data[j][i] * U.data[i][k]
+
+    return L, U, P
+
 
 def solve_forward_substitution(L: Matrix, b: Matrix) -> Matrix:
     validate_matrices(L, b)
@@ -150,18 +72,14 @@ def solve_backward_substitution(U: Matrix, b: Matrix) -> Matrix:
     return x
 
 
-def solve_lu_decomposition(A: Matrix, b: Matrix, pivot: bool = False) -> SolverResult:
+def solve_lu_decomposition(A: Matrix, b: Matrix) -> Matrix:
     validate_matrices(A, b)
 
     # https://en.wikipedia.org/wiki/LU_decomposition
     # https://www.sheffield.ac.uk/media/32074/download?attachment
 
-    start_time = time.perf_counter_ns()
-    if pivot:
-        P, L, U = lu_decomposition(A, True)
-        b = P * b
-    else:
-        L, U = lu_decomposition(A, False)
+    L, U, P = lu_decomposition(A)
+    b = P * b
     
     n = A.shape[0]
     x = Matrix.vector(n)
@@ -172,8 +90,5 @@ def solve_lu_decomposition(A: Matrix, b: Matrix, pivot: bool = False) -> SolverR
     # Ux = y
     x = solve_backward_substitution(U, y)
 
-    error = (A * x - b).norm()
-    end_time = time.perf_counter_ns()
-    total_time = (end_time - start_time) / 1e9
-    return SolverResult(x, error, [], 1, total_time, True)
+    return x
 
