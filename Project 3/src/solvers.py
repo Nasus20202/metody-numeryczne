@@ -95,21 +95,26 @@ def lu_decomposition(A: Matrix, pivot: bool = False) -> tuple[Matrix, Matrix]:
     U = Matrix.new(n, n)
     
     L.set_diagonal(1)
+    if pivot:
+        P = Matrix.new(n, n)
+        P.set_diagonal(1)
+
+    if pivot:
+        for i in range(n):
+                # Find the index of the maximum element in the i-th column
+                max_index = max(range(i, n), key=lambda x: abs(A.data[x][i]))
+
+                # Swap rows in A
+                A.data[i], A.data[max_index] = A.data[max_index], A.data[i]
+                P.data[i], P.data[max_index] = P.data[max_index], P.data[i]
+
+                # Swap rows in L
+                if i > 0:
+                    # L.data[i][:i], L.data[max_index][:i] = L.data[max_index][:i], L.data[i][:i]
+                    for j in range(i):
+                        L.data[i][j], L.data[max_index][j] = L.data[max_index][j], L.data[i][j]
+
     for i in range(n):
-        if pivot:
-            # Find the index of the maximum element in the i-th column
-            max_index = max(range(i, n), key=lambda x: abs(A.data[x][i]))
-
-            # Swap rows in A
-            A.data[i], A.data[max_index] = A.data[max_index], A.data[i]
-
-            # Swap rows in L
-            if i > 0:
-                # L.data[i][:i], L.data[max_index][:i] = L.data[max_index][:i], L.data[i][:i]
-                for j in range(i):
-                    L.data[i][j], L.data[max_index][j] = L.data[max_index][j], L.data[i][j]
-
-
         # upper triangular
         for j in range(i, n):
             U.data[i][j] = A.data[i][j] - sum([L.data[i][k] * U.data[k][j] for k in range(i)])
@@ -118,6 +123,8 @@ def lu_decomposition(A: Matrix, pivot: bool = False) -> tuple[Matrix, Matrix]:
         for j in range(i+1, n):
             L.data[j][i] = (A.data[j][i] - sum([L.data[j][k] * U.data[k][i] for k in range(i)])) / U.data[i][i]
 
+    if pivot:
+        return P, L, U
     return L, U
 
 def solve_forward_substitution(L: Matrix, b: Matrix) -> Matrix:
@@ -150,7 +157,11 @@ def solve_lu_decomposition(A: Matrix, b: Matrix, pivot: bool = False) -> SolverR
     # https://www.sheffield.ac.uk/media/32074/download?attachment
 
     start_time = time.perf_counter_ns()
-    L, U = lu_decomposition(A, pivot)
+    if pivot:
+        P, L, U = lu_decomposition(A, True)
+        b = P * b
+    else:
+        L, U = lu_decomposition(A, False)
     
     n = A.shape[0]
     x = Matrix.vector(n)
